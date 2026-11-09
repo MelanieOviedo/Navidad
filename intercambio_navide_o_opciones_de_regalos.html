@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intercambio Navideño - Opciones de Regalos 🎁</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        xmas: {
+                            dark: '#3b0a11',       // Rojo borgoña profundo
+                            red: '#8b1524',        // Rojo navideño vivo
+                            accent: '#c0262b',     // Rojo terciopelo
+                            gold: '#f59e0b',       // Dorado cálido
+                            brightgold: '#fbbf24', // Dorado luces
+                            cream: '#fef3c7',      // Crema nieve cálida
+                            pine: '#1b4332'        // Verde pino
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Fondo Navideño con Luces Bokeh y Gradiente Cálido */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #2e060c;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 10% 80%, rgba(139, 21, 36, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 90% 70%, rgba(27, 67, 50, 0.35) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, #4a0d16 0%, #200408 100%);
+            background-attachment: fixed;
+            color: #fef3c7;
+        }
+
+        /* Título con estilo Dorado Festivo */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fffbeb 0%, #fde68a 30%, #f59e0b 70%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Efecto Cristal Dorado para Cards */
+        .xmas-card {
+            background: rgba(74, 13, 22, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .xmas-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(251, 191, 36, 0.65);
+            box-shadow: 0 20px 35px -5px rgba(245, 158, 11, 0.25), 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        /* Modal Glass Backdrop */
+        .modal-glass {
+            background: rgba(20, 2, 5, 0.94);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Smooth scroll & touch action */
+        .touch-pan-y {
+            touch-action: pan-y;
+        }
+
+        /* Snow canvas pointer events */
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2e060c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8b1524;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative selection:bg-amber-500 selection:text-red-950 overflow-x-hidden">
+
+    <!-- Canvas de Nieve Sutil -->
+    <canvas id="snowCanvas"></canvas>
+
+    <!-- Luces Navideñas Decorativas Superiores -->
+    <div class="w-full flex justify-around opacity-75 py-2 pointer-events-none z-20">
+        <div class="w-3 h-3 rounded-full bg-amber-400 shadow-[0_0_12px_#fbbf24] animate-pulse"></div>
+        <div class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse" style="animation-delay: 0.3s"></div>
+        <div class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" style="animation-delay: 0.6s"></div>
+        <div class="w-3 h-3 rounded-full bg-amber-300 shadow-[0_0_12px_#fde047] animate-pulse" style="animation-delay: 0.2s"></div>
+        <div class="w-3 h-3 rounded-full bg-red-400 shadow-[0_0_12px_#f87171] animate-pulse" style="animation-delay: 0.5s"></div>
+        <div class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_12px_#10b981] animate-pulse" style="animation-delay: 0.8s"></div>
+    </div>
+
+    <!-- ENCABEZADO Y TÍTULO DE LA PÁGINA -->
+    <header class="relative z-20 pt-8 pb-6 px-4 text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-4">
+            <i class="fa-solid fa-star text-amber-400"></i> Intercambio Navideño 2026 <i class="fa-solid fa-star text-amber-400"></i>
+        </div>
+        
+        <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight gold-gradient-text mb-3">
+            Intercambio Navideño
+        </h1>
+        
+        <p class="font-serif italic text-xl sm:text-2xl text-amber-200/90 font-medium">
+            Opciones de regalos 🎁
+        </p>
+
+        <p class="text-xs sm:text-sm text-red-200/80 mt-3 max-w-md mx-auto leading-relaxed">
+            Haz clic en la tarjeta de un participante para abrir el carrusel con sus opciones e ideas de regalos.
+        </p>
+    </header>
+
+    <!-- SECCIÓN PRINCIPAL: GRID DE TARJETAS DE PARTICIPANTES -->
+    <main class="relative z-20 flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-6">
+        <div id="participantsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 sm:gap-6">
+            <!-- Renderizado dinámicamente desde el Array Javascript -->
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA MINIMALISTA -->
+    <footer class="relative z-20 py-8 text-center text-xs text-red-300/60 border-t border-amber-500/10 mt-auto">
+        <p class="flex items-center justify-center gap-2">
+            <span>🎄</span>
+            <span>Intercambio Navideño • Felices Fiestas</span>
+            <span>🎄</span>
+        </p>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- MODAL: CARRUSEL DE OPCIONES DE REGALOS -->
+    <!-- ========================================== -->
+    <div id="giftModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <!-- Fondo Oscuro Translúcido -->
+        <div id="modalBackdrop" class="fixed inset-0 modal-glass transition-opacity duration-300"></div>
+
+        <!-- Ventana Modal -->
+        <div class="relative w-full max-w-3xl bg-gradient-to-b from-red-950/95 to-[#24040a]/95 border border-amber-500/40 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col z-20 transform transition-all duration-300 scale-95 opacity-0 my-auto" id="modalContainer">
+            
+            <!-- Cabecera del Modal -->
+            <div class="px-5 py-4 border-b border-amber-500/20 bg-red-900/40 flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div id="modalParticipantAvatarWrapper" class="w-10 h-10 rounded-full overflow-hidden border-2 border-amber-400 shadow-md shrink-0 flex items-center justify-center">
+                        <!-- Avatar o inicial renderizada dinámicamente -->
+                    </div>
+                    <div>
+                        <h2 id="modalParticipantName" class="font-serif text-lg sm:text-xl font-bold text-amber-100">
+                            ---
+                        </h2>
+                        <span id="modalParticipantSubtitle" class="text-[11px] text-amber-300/80 font-medium tracking-wide">
+                            Ideas de Regalos
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <!-- Contador de diapositiva (ej: 1 / 3) -->
+                    <span id="carouselCounter" class="px-3 py-1 rounded-full bg-red-900/80 border border-amber-500/30 text-xs font-semibold text-amber-200">
+                        1 / 1
+                    </span>
+
+                    <!-- Botón Cerrar X -->
+                    <button id="closeModalBtn" class="w-9 h-9 rounded-full bg-red-900/80 hover:bg-amber-500 hover:text-red-950 text-amber-300 flex items-center justify-center transition-all duration-200 focus:outline-none" title="Cerrar (Esc)">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cuerpo del Carrusel (Cuando SI tiene fotos) -->
+            <div id="carouselBody" class="p-4 sm:p-6 flex flex-col items-center">
+                
+                <!-- Marco Principal de la Imagen del Regalo -->
+                <div class="relative w-full h-[50vh] sm:h-[62vh] max-h-[580px] min-h-[340px] bg-black/60 rounded-2xl border border-amber-500/20 overflow-hidden flex items-center justify-center group touch-pan-y" id="carouselTouchArea">
+                    
+                    <!-- Imagen del regalo actual -->
+                    <img id="carouselImage" src="" alt="Opción de regalo" class="max-w-full max-h-full w-auto h-auto object-contain transition-all duration-300 ease-out select-none">
+
+                    <!-- Botón para Ver imagen en tamaño original / nueva pestaña -->
+                    <a id="openFullImageBtn" href="#" target="_blank" rel="noopener noreferrer" class="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/60 hover:bg-amber-500 hover:text-red-950 text-amber-200 border border-amber-500/40 text-xs font-medium backdrop-blur-md transition-all flex items-center gap-1.5 shadow-lg z-10" title="Ver imagen original en tamaño completo">
+                        <i class="fa-solid fa-up-right-and-down-left-from-center text-[10px]"></i>
+                        <span class="hidden sm:inline">Ver original</span>
+                    </a>
+
+                    <!-- Botones de Navegación Flecha Izquierda / Derecha -->
+                    <button id="prevBtn" class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-red-950/80 hover:bg-amber-500 hover:text-red-950 border border-amber-500/40 text-amber-300 flex items-center justify-center backdrop-blur-md shadow-xl transition-all duration-200 active:scale-95 focus:outline-none z-10">
+                        <i class="fa-solid fa-chevron-left text-lg"></i>
+                    </button>
+
+                    <button id="nextBtn" class="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-red-950/80 hover:bg-amber-500 hover:text-red-950 border border-amber-500/40 text-amber-300 flex items-center justify-center backdrop-blur-md shadow-xl transition-all duration-200 active:scale-95 focus:outline-none z-10">
+                        <i class="fa-solid fa-chevron-right text-lg"></i>
+                    </button>
+
+                    <!-- Puntos Indicadores (Dots) -->
+                    <div id="carouselDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex flex-wrap justify-center items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-950/85 backdrop-blur-md border border-amber-500/30 max-w-[85%] z-10">
+                        <!-- Generados por JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Descripción del Regalo -->
+                <div id="carouselDescWrapper" class="w-full mt-4 p-3.5 rounded-xl bg-red-900/30 border border-amber-500/20 text-center">
+                    <p id="carouselDescription" class="text-sm sm:text-base text-amber-100 font-medium leading-relaxed">
+                        ---
+                    </p>
+                </div>
+            </div>
+
+            <!-- Vista Alternativa: Cuando el participante NO tiene fotos aún -->
+            <div id="emptyGiftsBody" class="hidden p-8 sm:p-12 flex flex-col items-center text-center">
+                <div class="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center text-4xl text-amber-400 mb-4 animate-bounce">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <h3 class="font-serif text-xl sm:text-2xl font-bold text-amber-200 mb-2">
+                    ¡Aún no hay opciones registradas!
+                </h3>
+                <p class="text-sm text-red-200/80 max-w-sm mb-6 leading-relaxed">
+                    Este participante todavía no ha compartido sus ideas o fotos de regalo. ¡Vuelve a consultar más tarde o recuérdale subir sus opciones! 🎅
+                </p>
+                <button onclick="closeModal()" class="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-red-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/20 active:scale-95">
+                    <i class="fa-solid fa-check mr-2"></i>Entendido
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CÓDIGO JAVASCRIPT & ESTRUCTURA DE DATOS -->
+    <!-- ========================================== -->
+    <script>
+        /**
+         * =========================================================================
+         * DATOS REALES DE LOS PARTICIPANTES Y SUS REGALOS
+         * =========================================================================
+         * Se leen directamente de las carpetas de cada persona en el proyecto.
+         * Cada regalo contiene la ruta relativa de la imagen y su descripción.
+         */
+        const PARTICIPANTES = [
+            {
+                id: 1,
+                name: "Alejandro",
+                avatar: "Alejandro/Avatar.jpg",
+                gifts: [
+                    {
+                        image: "Alejandro/WhatsApp Image 2026-11-08 at 6.24.50 PM.jpeg",
+                        description: "Case Antec Mid Tower con ventiladores RGB"
+                    },
+                    {
+                        image: "Alejandro/WhatsApp Image 2026-11-08 at 6.25.42 PM.jpeg",
+                        description: "Case Extreme Series Mid Tower Vidrio Temperado con iluminación RGB"
+                    },
+                    {
+                        image: "Alejandro/WhatsApp Image 2026-11-08 at 6.25.43 PM.jpeg",
+                        description: "Extreme Series Triton RGB - Negro (Extreme Tech - ₡8,000)"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Alexander",
+                avatar: "Alexander/Avatar.jpg",
+                gifts: [
+                    {
+                        image: "Alexander/WhatsApp Image 2026-11-08 at 8.08.05 PM.jpeg",
+                        description: "Camiseta Club Sport Herediano Talla XL"
+                    },
+                    {
+                        image: "Alexander/WhatsApp Image 2026-11-08 at 8.11.09 PM.jpeg",
+                        description: "Camiseta Club Sport Herediano Talla XL"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "Alonso",
+                avatar: "Alonso/Avatar.jpg",
+                gifts: [
+                    {
+                        image: "Alonso/WhatsApp Image 2026-11-09 at 1.11.29 AM.jpeg",
+                        description: "Audífonos Gamer Razer Kraken V4 X – Pokémon Edition"
+                    },
+                    {
+                        image: "Alonso/WhatsApp Image 2026-11-09 at 1.11.42 AM.jpeg",
+                        description: "Teclado Mecánico Redragon Eisa Pro – 98 Teclas RGB – Anime"
+                    },
+                    {
+                        image: "Alonso/WhatsApp Image 2026-11-09 at 1.12.08 AM.jpeg",
+                        description: "Camiseta Béisbol Boca Juniors 2025 Mundial de Clubes (Talla L)"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: "Geraldine",
+                avatar: "Geraldine/Avatar.jpg",
+                gifts: [] // Carpeta sin fotos actualmente
+            },
+            {
+                id: 5,
+                name: "Guisel",
+                avatar: "Guisel/Avatar.jpg",
+                gifts: [
+                    {
+                        image: "Guisel/WhatsApp Image 2026-11-03 at 8.16.53 PM.jpeg",
+                        description: "Tijeras profesionales de confección / sastrería "
+                    },
+                    {
+                        image: "Guisel/WhatsApp Image 2026-11-08 at 2.34.22 PM.jpeg",
+                        description: "Tratamiento Óleo L'Bel Ligne Experte Elixir de Luxe / Perfume Impredecible Ésika"
+                    },
+                    {
+                        image: "Guisel/WhatsApp Image 2026-11-09 at 10.03.25 AM.jpeg",
+                        description: "Perfume Nitro Intense"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                name: "Juanca",
+                avatar: "", // Sin Avatar.jpg por el momento (muestra inicial festiva 'J')
+                gifts: [
+                    {
+                        image: "Juanca/WhatsApp Image 2026-11-08 at 8.18.05 PM (1).jpeg",
+                        description: "Gorra New York Yankees NY (Blanca, Negra o Beige)"
+                    },
+                    {
+                        image: "Juanca/WhatsApp Image 2026-11-08 at 8.18.05 PM.jpeg",
+                        description: "Camiseta Inter de Milán Talla M"
+                    },
+                    {
+                        image: "Juanca/WhatsApp Image 2026-11-08 at 8.18.06 PM.jpeg",
+                        description: "Camiseta Chelsea FC Talla M"
+                    },
+                    {
+                        image: "Juanca/WhatsApp Image 2026-11-08 at 8.21.06 PM.jpeg",
+                        description: "Shorts de Mezclilla Vintage Lavados y Desgastados "
+                    }
+                ]
+            },
+            {
+                id: 7,
+                name: "Kyanni",
+                avatar: "Kyanni/Avatar.jpg",
+                gifts: [] // Carpeta sin fotos actualmente
+            },
+            {
+                id: 8,
+                name: "Melanie",
+                avatar: "Melanie/Avatar.jpg",
+                gifts: [
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.31 PM (1).jpeg",
+                        description: "Botella / Termo Stanley con agarradera (Rosa Pastel)"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.31 PM (2).jpeg",
+                        description: "Vaso térmico Stanley con asa (Rosa)"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.31 PM.jpeg",
+                        description: "Botella Owala FreeSip con diseño floral rosa (32 oz / 945 ml)"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.32 PM.jpeg",
+                        description: "Camiseta Selección Japon Talla S hombre o M de mujer"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.52 PM.jpeg",
+                        description: "Perfume Yara de Lattafa Eau de Parfum (100 ml)"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.53 PM (1).jpeg",
+                        description: "Set de delineadores en colores pastel Sweet Rainbow"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.53 PM.jpeg",
+                        description: "Delineador líquido rosa a prueba de agua (Waterproof)"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.54 PM (1).jpeg",
+                        description: "Dúo Ushas 2 en 1: Delineador de ojos y lápiz para cejas negro"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.54 PM.jpeg",
+                        description: "Delineadores con glitter / brillo (Tonos Planeado o Dorado)"
+                    },
+                    {
+                        image: "Melanie/WhatsApp Image 2026-11-08 at 8.14.55 PM.jpeg",
+                        description: "Delineador líquido Kevin & Coco"
+                    }
+                ]
+            },
+            {
+                id: 9,
+                name: "Stephanie",
+                avatar: "Stephanie/Avatar.jpg",
+                gifts: [
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.03 PM (1).jpeg",
+                        description: "Trío de sombras y rubor compacto en polvo Kevin & Coco"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.03 PM (2).jpeg",
+                        description: "Cepillo Secador de cabello (₡6,500)"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.03 PM (3).jpeg",
+                        description: "Paleta de rubores en polvo 6 tonos (₡1,500)"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.03 PM (4).jpeg",
+                        description: "Tintas para labios en frasquito (Tono Castaño / ₡1,700)"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.03 PM.jpeg",
+                        description: "Máscara de pestañas Prosa Maxi-Volume Silicón (Fórmula contra agua)"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.04 PM.jpeg",
+                        description: "Base líquida de maquillaje AMUSE tono 5 "
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.10 PM.jpeg",
+                        description: "Bolso Steve Madden de cinta gruesa SM en color negro (₡4,500)"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.11 PM (1).jpeg",
+                        description: "Dúo Amuse: Polvo compacto doble + Base acabado mate full cobertura"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.11 PM (2).jpeg",
+                        description: "Set facial 5 en 1 forma Hamburguesa Kevin & Coco (₡3,300)"
+                    },
+                    {
+                        image: "Stephanie/WhatsApp Image 2026-11-08 at 10.30.11 PM.jpeg",
+                        description: "Máscara para pestañas By Apple (envace negro)"
+                    }
+                ]
+            }
+        ];
+
+        // Variables de estado del carrusel
+        let currentParticipant = null;
+        let currentSlideIndex = 0;
+
+        // Variables para soporte de gestos táctiles (Swipe en móviles)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // ==========================================
+        // INICIALIZACIÓN
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderParticipantCards();
+            setupEventListeners();
+            initSnowEffect();
+        });
+
+        /**
+         * Renderiza la cuadrícula de tarjetas de participantes
+         */
+        function renderParticipantCards() {
+            const grid = document.getElementById('participantsGrid');
+            grid.innerHTML = '';
+
+            PARTICIPANTES.forEach(person => {
+                const card = document.createElement('div');
+                card.className = "xmas-card rounded-3xl p-5 flex flex-col items-center text-center cursor-pointer group";
+                card.onclick = () => openGiftModal(person.id);
+
+                // Avatar o Inicial festiva
+                const avatarContent = person.avatar && person.avatar.trim() !== ''
+                    ? `<img src="${encodeURI(person.avatar)}" alt="${person.name}" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-amber-400/80 shadow-lg group-hover:border-amber-300 transition-all duration-300">`
+                    : `<div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-red-900 via-red-800 to-amber-600 border-4 border-amber-400/80 shadow-lg flex items-center justify-center text-amber-100 font-serif font-bold text-3xl group-hover:border-amber-300 transition-all duration-300 shadow-amber-900/30">
+                        ${person.name.charAt(0).toUpperCase()}
+                       </div>`;
+
+                const giftCount = person.gifts ? person.gifts.length : 0;
+                const statusBadge = giftCount > 0
+                    ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                         <i class="fa-solid fa-gifts text-[10px]"></i> ${giftCount} ${giftCount === 1 ? 'opción' : 'opciones'}
+                       </span>`
+                    : `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-950/60 text-red-300/60 border border-red-500/20">
+                         <i class="fa-solid fa-hourglass-half text-[10px]"></i> Pendiente
+                       </span>`;
+
+                card.innerHTML = `
+                    <div class="relative mb-3">
+                        ${avatarContent}
+                        <div class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-amber-500 border-2 border-red-950 flex items-center justify-center text-red-950 text-xs shadow-md">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-serif text-lg sm:text-xl font-bold text-amber-100 group-hover:text-amber-300 transition-colors mb-2">
+                        ${person.name}
+                    </h3>
+                    ${statusBadge}
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        /**
+         * Abre el Modal con el carrusel para el participante seleccionado
+         */
+        function openGiftModal(participantId) {
+            const person = PARTICIPANTES.find(p => p.id === participantId);
+            if (!person) return;
+
+            currentParticipant = person;
+            currentSlideIndex = 0;
+
+            // Header del modal
+            document.getElementById('modalParticipantName').innerText = person.name;
+
+            // Avatar en el header
+            const avatarWrapper = document.getElementById('modalParticipantAvatarWrapper');
+            if (person.avatar && person.avatar.trim() !== '') {
+                avatarWrapper.innerHTML = `<img src="${encodeURI(person.avatar)}" alt="${person.name}" class="w-full h-full object-cover">`;
+            } else {
+                avatarWrapper.innerHTML = `<div class="w-full h-full bg-gradient-to-tr from-red-900 to-amber-600 flex items-center justify-center text-amber-100 font-serif font-bold text-base">${person.name.charAt(0).toUpperCase()}</div>`;
+            }
+
+            const carouselBody = document.getElementById('carouselBody');
+            const emptyGiftsBody = document.getElementById('emptyGiftsBody');
+            const counter = document.getElementById('carouselCounter');
+            const subtitle = document.getElementById('modalParticipantSubtitle');
+
+            if (!person.gifts || person.gifts.length === 0) {
+                // Estado sin opciones aún
+                carouselBody.classList.add('hidden');
+                emptyGiftsBody.classList.remove('hidden');
+                counter.innerText = '0 / 0';
+                subtitle.innerText = 'Sin opciones aún';
+            } else {
+                // Estado con opciones
+                carouselBody.classList.remove('hidden');
+                emptyGiftsBody.classList.add('hidden');
+                subtitle.innerText = 'Ideas de Regalos';
+                updateCarouselView();
+            }
+
+            // Mostrar modal con animación fluida
+            const modal = document.getElementById('giftModal');
+            const container = document.getElementById('modalContainer');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('scale-95', 'opacity-0');
+                container.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            document.body.style.overflow = 'hidden';
+        }
+
+        /**
+         * Cierra el modal
+         */
+        function closeModal() {
+            const modal = document.getElementById('giftModal');
+            const container = document.getElementById('modalContainer');
+
+            container.classList.remove('scale-100', 'opacity-100');
+            container.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                currentParticipant = null;
+            }, 250);
+        }
+
+        /**
+         * Actualiza la imagen y descripción visible en el carrusel
+         */
+        function updateCarouselView() {
+            if (!currentParticipant || !currentParticipant.gifts || currentParticipant.gifts.length === 0) return;
+            
+            const total = currentParticipant.gifts.length;
+            const gift = currentParticipant.gifts[currentSlideIndex];
+
+            // Actualizar Contador
+            document.getElementById('carouselCounter').innerText = `${currentSlideIndex + 1} de ${total}`;
+
+            // Actualizar Imagen
+            const imgEl = document.getElementById('carouselImage');
+            const encodedPath = encodeURI(gift.image);
+            imgEl.src = encodedPath;
+
+            // Actualizar Enlace de Pantalla Completa
+            const fullImageBtn = document.getElementById('openFullImageBtn');
+            fullImageBtn.href = encodedPath;
+
+            // Fallback si la imagen no carga
+            imgEl.onerror = () => {
+                imgEl.src = 'https://placehold.co/800x600/3b0a11/fef3c7?text=Imagen+no+disponible';
+            };
+
+            // Actualizar Descripción
+            const descEl = document.getElementById('carouselDescription');
+            descEl.innerText = gift.description || `Opción ${currentSlideIndex + 1}`;
+
+            // Actualizar Puntos (Dots)
+            const dotsContainer = document.getElementById('carouselDots');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('button');
+                dot.type = "button";
+                dot.setAttribute('aria-label', `Ir a foto ${i + 1}`);
+                dot.className = `h-2 rounded-full transition-all duration-300 ${i === currentSlideIndex ? 'bg-amber-400 w-6 shadow-[0_0_8px_#fbbf24]' : 'bg-red-800/80 hover:bg-amber-300/80 w-2'}`;
+                dot.onclick = () => {
+                    currentSlideIndex = i;
+                    updateCarouselView();
+                };
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function nextSlide() {
+            if (!currentParticipant || !currentParticipant.gifts || currentParticipant.gifts.length === 0) return;
+            currentSlideIndex = (currentSlideIndex + 1) % currentParticipant.gifts.length;
+            updateCarouselView();
+        }
+
+        function prevSlide() {
+            if (!currentParticipant || !currentParticipant.gifts || currentParticipant.gifts.length === 0) return;
+            currentSlideIndex = (currentSlideIndex - 1 + currentParticipant.gifts.length) % currentParticipant.gifts.length;
+            updateCarouselView();
+        }
+
+        /**
+         * Configuración de Eventos de Teclado, Clics y Gestos Táctiles
+         */
+        function setupEventListeners() {
+            document.getElementById('closeModalBtn').onclick = closeModal;
+            document.getElementById('modalBackdrop').onclick = closeModal;
+            document.getElementById('nextBtn').onclick = nextSlide;
+            document.getElementById('prevBtn').onclick = prevSlide;
+
+            // Teclas de flechas izquierda/derecha y ESC para cerrar
+            document.addEventListener('keydown', (e) => {
+                const modal = document.getElementById('giftModal');
+                if (!modal.classList.contains('hidden')) {
+                    if (e.key === 'ArrowRight') nextSlide();
+                    if (e.key === 'ArrowLeft') prevSlide();
+                    if (e.key === 'Escape') closeModal();
+                }
+            });
+
+            // Gestos táctiles Swipe en la imagen del carrusel para móviles
+            const touchArea = document.getElementById('carouselTouchArea');
+            touchArea.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            touchArea.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const diff = touchEndX - touchStartX;
+                if (Math.abs(diff) > 40) {
+                    if (diff < 0) nextSlide();
+                    else prevSlide();
+                }
+            }
+        }
+
+        /**
+         * Efecto sutil de Nieve cayendo en fondo
+         */
+        function initSnowEffect() {
+            const canvas = document.getElementById('snowCanvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const numFlakes = 35;
+            const flakes = Array.from({ length: numFlakes }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 2 + 1,
+                d: Math.random() * 0.8 + 0.3
+            }));
+
+            function drawSnow() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = "rgba(254, 243, 199, 0.6)";
+                ctx.beginPath();
+                for (let i = 0; i < numFlakes; i++) {
+                    const f = flakes[i];
+                    ctx.moveTo(f.x, f.y);
+                    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+
+                    f.y += f.d;
+                    f.x += Math.sin(f.y / 25) * 0.4;
+
+                    if (f.y > height) {
+                        flakes[i] = {
+                            x: Math.random() * width,
+                            y: -5,
+                            r: f.r,
+                            d: f.d
+                        };
+                    }
+                }
+                ctx.fill();
+                requestAnimationFrame(drawSnow);
+            }
+
+            drawSnow();
+        }
+    </script>
+</body>
+</html>
